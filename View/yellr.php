@@ -38,7 +38,7 @@
         unset($_SESSION['username']);
         unset($_SESSION['loggedin']);
         unset($_SESSION['userID']);
-        header("Location: index.php");
+        header("Location: ../index.php");
         exit();  
     }    
     
@@ -82,10 +82,10 @@
                 <table>
                     <tr>
                         <td style="vertical-align: top">
-                            <a href="index.php"><img src="image/yellrlogo.png" width="20" height="20"></a>&nbsp;&nbsp;
+                            <a href="../index.php"><img src="image/yellrlogo.png" width="20" height="20"></a>&nbsp;&nbsp;
                         </td>
                         <td>
-                            <p><a href="index.php">Home</a> &nbsp;&nbsp;&nbsp;&nbsp; <a href="about.php">About</a></p>
+                            <p><a href="../index.php">Home</a> &nbsp;&nbsp;&nbsp;&nbsp; <a href="about.php">About</a></p>
                         </td>
                     </tr>
                 </table>

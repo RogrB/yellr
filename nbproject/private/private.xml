@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/tjafs/yellr/API/registerUser.php</file>
+            <file>file:/C:/tjafs/yellr/API/apiUserHeader.php</file>
+            <file>file:/C:/tjafs/yellr/View/yellr.php</file>
+            <file>file:/C:/tjafs/yellr/View/setlike.php</file>
+            <file>file:/C:/tjafs/yellr/View/yellr.js</file>
+            <file>file:/C:/tjafs/yellr/DAL/userDatabase.php</file>
+            <file>file:/C:/tjafs/yellr/API/getYells.php</file>
+            <file>file:/C:/tjafs/yellr/View/deletelike.php</file>
+            <file>file:/C:/tjafs/yellr/View/user.php</file>
+            <file>file:/C:/tjafs/yellr/API/getLatestYell.php</file>
+            <file>file:/C:/tjafs/yellr/View/readlike.php</file>
+            <file>file:/C:/tjafs/yellr/View/about.php</file>
+            <file>file:/C:/tjafs/yellr/BLL/userLogikk.php</file>
+            <file>file:/C:/tjafs/yellr/Model/domeneModell.php</file>
+            <file>file:/C:/tjafs/yellr/index.php</file>
+            <file>file:/C:/tjafs/yellr/View/jquery-3.2.0.js</file>
+            <file>file:/C:/tjafs/yellr/View/updateinfo.php</file>
+            <file>file:/C:/tjafs/yellr/View/getyells.php</file>
+            <file>file:/C:/tjafs/yellr/View/yellr.css</file>
+        </group>
+    </open-files>
+</project-private>

@@ -2,7 +2,7 @@
     session_start();
     if (!$_SESSION['loggedin']) {
         echo "You're not logged in. ";
-        echo "<a href='index.php'>Login</a>";
+        echo "<a href='../index.php'>Login</a>";
         die();
     }
     if (!empty($_GET['user'])) {
@@ -13,7 +13,7 @@
                 die("Failed connection to Database: " . $db->connect - error);
             }            
             if ($_SESSION['username'] !== $username) {
-                echo "Access Denied. If this is your account <a href='index.php'>Login to access this page</a>";
+                echo "Access Denied. If this is your account <a href='../index.php'>Login to access this page</a>";
                 die();                
             }
             else {
@@ -33,7 +33,7 @@
         unset($_SESSION['username']);
         unset($_SESSION['loggedin']);
         unset($_SESSION['userID']);
-        header("Location: index.php");
+        header("Location: ../index.php");
         exit();  
     }
 
@@ -94,10 +94,10 @@
                 <table>
                     <tr>
                         <td style="vertical-align: top">
-                            <a href="index.php"><img src="image/yellrlogo.png" width="20" height="20"></a>&nbsp;&nbsp;
+                            <a href="../index.php"><img src="image/yellrlogo.png" width="20" height="20"></a>&nbsp;&nbsp;
                         </td>
                         <td>
-                            <p><a href="index.php">Home</a> &nbsp;&nbsp;&nbsp;&nbsp; <a href="about.php">About</a></p>
+                            <p><a href="../index.php">Home</a> &nbsp;&nbsp;&nbsp;&nbsp; <a href="about.php">About</a></p>
                         </td>
                     </tr>
                 </table>

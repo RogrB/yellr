@@ -18,10 +18,10 @@
             <table>
                 <tr>
                     <td style="vertical-align: top">
-                        <a href="index.php"><img src="image/yellrlogo.png" width="20" height="20"></a>&nbsp;&nbsp;
+                        <a href="../index.php"><img src="image/yellrlogo.png" width="20" height="20"></a>&nbsp;&nbsp;
                     </td>
                     <td>
-                        <p><a href="index.php">Home</a> &nbsp;&nbsp;&nbsp;&nbsp; <a href="about.php">About</a></p>
+                        <p><a href="../index.php">Home</a> &nbsp;&nbsp;&nbsp;&nbsp; <a href="about.php">About</a></p>
                     </td>
                 </tr>
             </table>
@@ -47,7 +47,7 @@ Duis in porta tortor, vel congue libero. Suspendisse ultricies augue ante, in ac
         <hr>
         <br><br>
         <p class='greytext'>See what's happening in the world right now.</p><br>
-        <a href='index.php' class='btn btn-primary'>JOIN NOW</a><br><br><br>
+        <a href='../index.php' class='btn btn-primary'>JOIN NOW</a><br><br><br>
     </div>
     <br><br><br><br>
 
