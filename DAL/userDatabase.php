@@ -36,7 +36,7 @@ class userDB {
                 return "Feil";
             }
             else {
-                return ($this->registerUserInfo($this->db->insert_id) ? "OK" : "Feil");
+                return ($this->registerUserInfo($this->db->insert_id) ? $this->db->insert_id : "Feil");
             }
         }     
     }
@@ -89,6 +89,18 @@ class userDB {
         else {
             return false;
         }
+    }
+    
+    function getInfo($username) {
+        $sql = "SELECT * FROM user, userinfo WHERE username = '" . $username ."' AND user.userID = userinfo.userID;";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            echo "Error";
+        }
+        else {
+            $Objekt = $resultat->fetch_object();
+            return $Objekt;
+        }                    
     }
     
     

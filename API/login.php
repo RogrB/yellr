@@ -11,21 +11,15 @@ $user->password = $_POST['password'];
 
 $ok = $userLogic->login($user);
 if ($ok == "DB error") {
-    unset($_SESSION['loggedin']);
-    unset($_SESSION['username']);
-    unset($_SESSION['userID']);
+    $this->clearSession();
     echo json_encode("DB error");    
 }
 else if ($ok == "Wrong password") {
-    unset($_SESSION['loggedin']);
-    unset($_SESSION['username']);
-    unset($_SESSION['userID']);
+    $this->clearSession();
     echo json_encode("Wrong password");
 }
 else if ($ok == "No such user") {
-    unset($_SESSION['loggedin']);
-    unset($_SESSION['username']);
-    unset($_SESSION['userID']);
+    $this->clearSession();
     echo json_encode("No such user");    
 }
 else {
@@ -33,4 +27,10 @@ else {
     $_SESSION['username'] = $user->username;
     $_SESSION['userID'] = (int)$ok;
     echo json_encode("OK");
+}
+
+function clearSession() {
+    unset($_SESSION['loggedin']);
+    unset($_SESSION['username']);
+    unset($_SESSION['userID']);    
 }

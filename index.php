@@ -44,13 +44,13 @@
                 password        : $("#regpassword").val()             
             };
             console.log(send);
-
             $.post(url,send,function(data) {
-                console.log(data);
                 if(data === "Feil") {
                     console.log("Failed to register new user " + send.username);
                 }
-                $(location).attr('href', 'view/user.php?user=' + send.username + '&newuser=true');  
+                else {
+                    $(location).attr('href', 'view/user.php?user=' + send.username + '&newuser=true');  
+                }
             })
                 .fail(function(data) {
                     console.log("Failed API call");
@@ -65,10 +65,8 @@
                 username        : $("#username").val(),
                 password        : $("#password").val()             
             };
-            console.log(send);
 
             $.post(url,send,function(data) {
-                console.log(data);
                 if(data === "DB error") {
                     console.log("Failed to register new user " + send.username);
                 }

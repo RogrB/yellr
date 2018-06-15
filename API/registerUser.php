@@ -12,13 +12,15 @@ $user->email = $_POST['email'];
 $user->password = $_POST['password'];
 
 $ok = $userLogic->registerUser($user);
-if ($ok == "OK") {
-    $_SESSION['loggedin'] = true;
-    $_SESSION['username'] = $user->username;
-    echo json_encode("OK");
-}
-else {
+if ($ok === "Feil") {
     unset($_SESSION['loggedin']);
     unset($_SESSION['username']);
+    unset($_SESSION['userID']);
     echo json_encode("Feil");
+}
+else {
+    $_SESSION['userID'] = $ok;
+    $_SESSION['loggedin'] = true;
+    $_SESSION['username'] = $user->username;
+    echo json_encode("OK");    
 }

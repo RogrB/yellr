@@ -29,4 +29,9 @@ class userLogic {
         return $ok;
     }
     
+    function getInfo($username) {
+        $ok = $this->db->getInfo($username);
+        return $ok;
+    }
+    
 }

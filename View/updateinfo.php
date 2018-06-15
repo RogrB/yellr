@@ -1,29 +1,5 @@
 <?php
-    session_start();
-    if (!empty($_GET['user'])) {
-        if (isset($_SESSION['username'])) {
-            $db = new mysqli("localhost", "root", "", "test");
-            if ($db->connect_error) {
-                die("Failed connection to Database: " . $db->connect - error);
-            }
-            $username = $db->real_escape_string($_GET['user']);
-            if ($_SESSION['username'] !== $username) {
-                echo "Access Denied. If this is your account <a href='../index.php'>Login to access this page</a>";
-                die();                
-            }
-            else {
-                $sql = "SELECT * FROM user, userinfo WHERE username = '" . $username ."' AND user.userID = userinfo.userID;";
-                $resultat = $db->query($sql);
-                if (!$resultat) {
-                    echo "Error " . $db->error;
-                }
-                else {
-                    $radObjekt = $resultat->fetch_object();
-                    $userID = $radObjekt->userID;
-                }                
-            }
-        }
-    }
+session_start();
 ?>
 <!DOCTYPE html>
 <html>
@@ -40,6 +16,58 @@
     <script src="yellr.js" type="text/javascript"></script>
 </head>
 <body>
+    <script type="text/javascript">
+        "use strict"; 
+        $(function() {
+            var url = "../API/checkLogin.php";
+            var send = { username : <?php echo json_encode($_SESSION['username']) ?> };
+            $.post(url,send,function(data) {
+                if(data === "Feil") {
+                    console.log("Access denied, please log in");
+                    $(location).attr('href', '../index.php');  
+                }
+                else if(data === "Wrong user") {
+                    console.log("Access denied, wrong user");
+                    $(location).attr('href', '../index.php');
+                }
+                else {
+                    //console.log("Verified user");
+                    $("#unameHeader").html(data.username);
+                    $("#joindate").html(data.joindate);
+                    $("#description").val(data.description);                
+                    $("#location").val(data.location);
+                    $("#email").val(data.email);
+                }
+            })
+                .fail(function(jqxhr, status, exception) {
+                //alert('Exception:' + exception + "\n Status: " + status + " \n jqxhr: " + jqxhr);
+                console.log("Failed API call to verify login " + jqxhr);
+            });
+
+            $("#register").click(function() {
+                var url = "../API/registerUser.php";
+                var send = {
+                    username        : $("#regusername").val(),
+                    email           : $("#regemail").val(),
+                    password        : $("#regpassword").val()             
+                };
+
+                $.post(url,send,function(data) {
+                    if(data === "Feil") {
+                        console.log("Failed to register new user " + send.username);
+                    }
+                    else {
+                        $(location).attr('href', 'view/user.php?user=' + send.username + '&newuser=true');  
+                    }
+                })
+                    .fail(function(data) {
+                        console.log("Failed API call");
+                        console.log(data);
+                    });
+
+            }); 
+        });
+    </script>
     <div class="header">
         <div class="headerlinks">
             <table>
@@ -56,8 +84,8 @@
     </div>    
     <br><br><br>
     <div class='updateinfo'>
-        <h2><?php echo $radObjekt->username;  ?></h2>
-        <p>Joined on <?php echo $radObjekt->joindate;  ?></p>
+        <h2 id="unameHeader"></h2>
+        <p>Joined on <span id="joindate"></span></p>
         <form action="" method="POST" name='userinfo' id='userinfo'>
             <table>
                 <tr>
@@ -65,7 +93,7 @@
                         <p>Description:</p>
                     </td>
                     <td>
-                        <input type='text' name='description' id='description' class="form-control" value="<?php echo $radObjekt->description;  ?>">
+                        <input type='text' name='description' id='description' class="form-control">
                     </td>
                 </tr>
                 <tr>
@@ -73,7 +101,7 @@
                         <p>Location:</p>
                     </td>
                     <td>
-                        <input type='text' name='location' id='location' class="form-control" value="<?php echo $radObjekt->location;  ?>">
+                        <input type='text' name='location' id='location' class="form-control">
                     </td>
                 </tr>
                 <tr>
@@ -81,7 +109,7 @@
                         <p>Email:</p>
                     </td>
                     <td>
-                        <input type='text' name='email' id='email' class="form-control" value="<?php echo $radObjekt->email;  ?>">
+                        <input type='text' name='email' id='email' class="form-control">
                     </td>
                 </tr>            
                 <tr>
@@ -128,14 +156,14 @@
                 // Sjekk om filen faktisk er bilde, og ikke falsk bilde
                 $check = getimagesize($_FILES["filstreng"]["tmp_name"]);
                 if (!$check) {
-                    echo "Fil er ikke ett bilde, eller ingen bildefil valgt - Filopplasting avbrutt<br />";
+                    echo "Fil er ikke et bilde, eller ingen bildefil valgt - Filopplasting avbrutt<br />";
                 }
                 else {
                     // Bildet er OK - Prøver å laste opp filen
                     $filsjekk = move_uploaded_file($temp_fil, $helt_filnavn);
                     if (!$filsjekk) {
                         echo "Kunne ikke lagre bildefilen - Eller ingen bildefil valgt<br />";
-                        error_log("Kunne ikke lagre bildefilen - Eller ingen bildefil valgt", 3, "logg.txt");
+                        error_log("Kunne ikke lagre bildefilen - Eller ingen bildefil valgt\n", 3, "logg.txt");
                     }
                     else {
                         $bilde1 = true;
@@ -157,7 +185,7 @@
                     $filsjekk2 = move_uploaded_file($temp_fil2, $helt_filnavn2);
                     if (!$filsjekk2) {
                         echo "Kunne ikke lagre bildefilen - Eller ingen bildefil valgt<br />";
-                        error_log("Kunne ikke lagre bildefilen - Eller ingen bildefil valgt", 3, "logg.txt");
+                        error_log("Kunne ikke lagre bildefilen - Eller ingen bildefil valgt\n", 3, "logg.txt");
                     }
                     else {
                         $bilde2 = true;
@@ -202,7 +230,7 @@
             else {
                 $db->rollback();
                 echo "Could not write to database";
-                error_log("Feil i insettning til database - Updateinfo", 3, "logg.txt");
+                error_log("Feil i insettning til database - Updateinfo\n", 3, "logg.txt");
             }            
         }
     }
