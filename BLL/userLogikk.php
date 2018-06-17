@@ -34,4 +34,9 @@ class userLogic {
         return $ok;
     }
     
+    function updateInfo($info) {
+        $ok = $this->db->updateInfo($info);
+        return $ok;
+    }
+    
 }

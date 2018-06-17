@@ -17,10 +17,11 @@ session_start();
 </head>
 <body>
     <script type="text/javascript">
-        "use strict"; 
+        //"use strict"; 
+        var uname = <?php echo json_encode($_SESSION['username']) ?> ;
         $(function() {
             var url = "../API/checkLogin.php";
-            var send = { username : <?php echo json_encode($_SESSION['username']) ?> };
+            var send = { username : uname };
             $.post(url,send,function(data) {
                 if(data === "Feil") {
                     console.log("Access denied, please log in");
@@ -44,27 +45,46 @@ session_start();
                 console.log("Failed API call to verify login " + jqxhr);
             });
 
-            $("#register").click(function() {
-                var url = "../API/registerUser.php";
-                var send = {
-                    username        : $("#regusername").val(),
-                    email           : $("#regemail").val(),
-                    password        : $("#regpassword").val()             
-                };
-
-                $.post(url,send,function(data) {
-                    if(data === "Feil") {
-                        console.log("Failed to register new user " + send.username);
-                    }
-                    else {
-                        $(location).attr('href', 'view/user.php?user=' + send.username + '&newuser=true');  
-                    }
-                })
+            $("#userinfo").submit(function(evt) {
+                evt.preventDefault();
+                var formData = new FormData($(this)[0]);
+                if($("#filstreng").val() !== "") {
+                    var file_data = $('#filstreng').prop('files')[0]; 
+                    formData.append('profilepicture', file_data);
+                }
+                if($("#filstreng2").val() !== "") {
+                    var file_data = $('#filstreng2').prop('files')[0]; 
+                    formData.append('userbg', file_data);
+                }                
+                $.ajax({
+                     url: '../API/updateInfo.php',
+                     cache: false,
+                     contentType: false,
+                     processData: false,
+                     data: formData,                         
+                     async: true,
+                     enctype: 'multipart/form-data',
+                     type: 'POST',
+                     success: function(response){
+                        if (response === "Feil") {
+                           console.log("Failed to update info");
+                           $("#result").html("Failed to update info");
+                        }
+                        else if (response === "Feil insetting") {
+                            console.log("Failed to update info, or info did not get modified");
+                            $("#result").html("Failed to update info, or info did not get modified");
+                        }
+                        else {
+                            console.log("Info updated successfully");
+                            $("#result").html("Info updated successfully");
+                        }
+                     }
+                  })
                     .fail(function(data) {
-                        console.log("Failed API call");
+                        console.log("Failed API call to update info");
                         console.log(data);
-                    });
-
+                        $("#result").html("Failed API call to update info");
+                    });                       
             }); 
         });
     </script>
@@ -86,7 +106,7 @@ session_start();
     <div class='updateinfo'>
         <h2 id="unameHeader"></h2>
         <p>Joined on <span id="joindate"></span></p>
-        <form action="" method="POST" name='userinfo' id='userinfo'>
+        <form method="POST" id='userinfo'>
             <table>
                 <tr>
                     <td>
@@ -117,7 +137,7 @@ session_start();
                         Profile Picture:
                     </td>
                     <td>
-                        <input type="file" name="filstreng">
+                        <input type="file" id="filstreng">
                     </td>
                 </tr>
                 <tr>
@@ -125,117 +145,19 @@ session_start();
                         <p>Background Image:</p>
                     </td>
                     <td>
-                        <input type="file" name="filstreng2">
+                        <input type="file" id="filstreng2">
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2"><br>
                         <center><input type='submit' name='update' value='Update' class="btn btn-primary"></center>
+                        <br><span id="result"></span><br><br>
+                        <center><a href="user.php?user=<?php echo $_SESSION['username']; ?>" class="btn btn-primary">Back</a></center>
                     </td>
                 </tr>
             </table>
         </form>
     </div>
-    
-   <?php
-    if (isset($_POST['update'])) {
-        $db = new mysqli("localhost", "root", "", "test");
-        $db->autocommit(false);
-        $description = $db->real_escape_string($_POST['description']);
-        $location = $db->real_escape_string($_POST['location']);
-        $email= $db->real_escape_string($_POST['email']);
-        
-        $bilde1 = false;
-        $bilde2 = false;
-        if ( ! empty($_FILES)) {
-            if ($_FILES["filstreng"]["size"] != 0) {
-                // Opplasting av profilbilde
-                $temp_fil = $_FILES['filstreng']['tmp_name'];
-                $filnavn = $_FILES['filstreng']['name'];
-                $helt_filnavn = $db->real_escape_string("image/upload/" . $filnavn);
-                // Sjekk om filen faktisk er bilde, og ikke falsk bilde
-                $check = getimagesize($_FILES["filstreng"]["tmp_name"]);
-                if (!$check) {
-                    echo "Fil er ikke et bilde, eller ingen bildefil valgt - Filopplasting avbrutt<br />";
-                }
-                else {
-                    // Bildet er OK - Prøver å laste opp filen
-                    $filsjekk = move_uploaded_file($temp_fil, $helt_filnavn);
-                    if (!$filsjekk) {
-                        echo "Kunne ikke lagre bildefilen - Eller ingen bildefil valgt<br />";
-                        error_log("Kunne ikke lagre bildefilen - Eller ingen bildefil valgt\n", 3, "logg.txt");
-                    }
-                    else {
-                        $bilde1 = true;
-                    }
-                }
-            }
-            if ($_FILES["filstreng2"]["size"] != 0) {
-                // Opplasting av bakgrunnsbilde
-                $temp_fil2 = $_FILES['filstreng']['tmp_name'];
-                $filnavn2 = $_FILES['filstreng']['name'];
-                $helt_filnavn2 = $db->real_escape_string("image/upload/" . $filnavn2);
-                // Sjekk om filen faktisk er bilde, og ikke falsk bilde
-                $check2 = getimagesize($_FILES["filstreng"]["tmp_name"]);
-                if (!$check2) {
-                    echo "Fil er ikke ett bilde, eller ingen bildefil valgt - Filopplasting avbrutt<br />";
-                }
-                else {
-                    // Bildet er OK - Prøver å laste opp filen
-                    $filsjekk2 = move_uploaded_file($temp_fil2, $helt_filnavn2);
-                    if (!$filsjekk2) {
-                        echo "Kunne ikke lagre bildefilen - Eller ingen bildefil valgt<br />";
-                        error_log("Kunne ikke lagre bildefilen - Eller ingen bildefil valgt\n", 3, "logg.txt");
-                    }
-                    else {
-                        $bilde2 = true;
-                    }
-                }
-            }
-        }
-        // FORSKJELLIGE SQL AVHENGIG AV OM TING BLE OPPDATERT ELLER IKKE
-        if ($bilde1 && $bilde2) {
-            $sql = "UPDATE userinfo SET description = '" . $description . "', location = '" . $location . "', profilepicture = '" . $helt_filnavn . "', userbg = '" . $helt_filnavn2 . "' ";
-            $sql .= "WHERE userID = '" . $radObjekt->userID . "';";
-        }
-        else if ($bilde1 && !$bilde2) {
-            $sql = "UPDATE userinfo SET description = '" . $description . "', location = '" . $location . "', profilepicture = '" . $helt_filnavn . "' ";
-            $sql .= "WHERE userID = '" . $radObjekt->userID . "';";            
-        }
-        else if (!$bilde1 && $bilde2) {
-            $sql = "UPDATE userinfo SET description = '" . $description . "', location = '" . $location . "', userbg = '" . $helt_filnavn2 . "' ";
-            $sql .= "WHERE userID = '" . $radObjekt->userID . "';";            
-        }
-        else {
-            $sql = "UPDATE userinfo SET description = '" . $description . "', location = '" . $location . "' ";
-            $sql .= "WHERE userID = '" . $radObjekt->userID . "';";            
-        }
-        
-        echo $sql;
-        $resultat = $db->query($sql);
-        $ok = true;
-        if (!$resultat) {
-            $ok = false;
-        }
-        else {
-            if ($db->affected_rows == 0) {
-                $ok = false;
-            }
-            if ($ok) {
-                // Alt ok
-                $db->commit();
-                header("Location: user.php?user=$username");
-                exit();                
-            }
-            else {
-                $db->rollback();
-                echo "Could not write to database";
-                error_log("Feil i insettning til database - Updateinfo\n", 3, "logg.txt");
-            }            
-        }
-    }
-
-   ?>
     
 </body>
 </html>

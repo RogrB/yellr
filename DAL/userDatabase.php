@@ -103,6 +103,30 @@ class userDB {
         }                    
     }
     
+    function updateInfo($info) {
+        $sql = "UPDATE userinfo SET description = '" . $info->description . "', location = '" . $info->location . "'";
+        if (isset($info->profilepicture)) {
+            $sql .= ", profilepicture = '" . $info->profilepicture . "'";
+        }
+        if (isset($info->userbg)) {
+            $sql .= ", userbg = '" . $info->userbg . "'";
+        }
+        $sql .= " WHERE userID = '" . $info->userID . "';";             
+        
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Feil";
+        }
+        else {
+            if ($this->db->affected_rows == 0) {
+                return "Feil insetting";
+            }
+            else {
+                return "OK";
+            }         
+        }        
+    }
+    
     
     /*
     function hentAlleKunder()

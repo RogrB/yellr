@@ -36,7 +36,8 @@
                 $("#latestYell").html("Failed to get latest yell");
         });
         
-        $("#register").click(function() {
+        $("#registerForm").submit(function(evt) {
+            evt.preventDefault();
             var url = "API/registerUser.php";
             var send = {
                 username        : $("#regusername").val(),
@@ -59,7 +60,8 @@
                 
         }); 
         
-        $("#login").click(function() {
+        $("#loginForm").submit(function(evt) {
+            evt.preventDefault();
             var url = "API/login.php";
             var send = {
                 username        : $("#username").val(),
@@ -127,33 +129,37 @@
                         </td>
                         <td><br><br>
                             <div class='formdiv1'>
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <input type='text' name='username' id='username' class="form-control" placeholder="Username">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <input type='password' name='password' id='password' class="form-control" placeholder="Password">
-                                        </td>
-                                        <td>
-                                            &nbsp;&nbsp;<button id='login'class="btn btn-primary">Log in</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div id='remember'><input type='checkbox' name='remember' value='true' checked="checked"> Remember me</div>
-                                        </td>
-                                    </tr>
-                                </table>
+                                <form id="loginForm" method="POST">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <input type='text' name='username' id='username' class="form-control" placeholder="Username">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type='password' name='password' id='password' class="form-control" placeholder="Password">
+                                            </td>
+                                            <td>
+                                                &nbsp;&nbsp;<input type="submit" value="Log in" id='login'class="btn btn-primary">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div id='remember'><input type='checkbox' name='remember' value='true' checked="checked"> Remember me</div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </form>
                             </div>
                             <br>
                             <div class='formdiv2'>
-                                <input type='text' name='regusername' id='regusername' placeholder="Username" class="form-control">
-                                <input type='text' name='regemail' id='regemail' placeholder="Email" class="form-control">
-                                <input type='password' name='regpassword' id='regpassword' placeholder="Password" class="form-control">
-                                <center><button id="register" class="btn btn-primary">Sign up for Yellr</button></center>
+                                <form id="registerForm" method="POST">
+                                    <input type='text' name='regusername' id='regusername' placeholder="Username" class="form-control">
+                                    <input type='text' name='regemail' id='regemail' placeholder="Email" class="form-control">
+                                    <input type='password' name='regpassword' id='regpassword' placeholder="Password" class="form-control">
+                                    <center><input type="submit" id="register" class="btn btn-primary" value="Sign up for Yellr"></center>
+                                </form>
                             </div>
                         </td>
                     </tr>

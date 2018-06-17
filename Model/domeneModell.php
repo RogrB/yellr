@@ -9,3 +9,10 @@ class user {
     public $userID;
 }
 
+class description {
+    public $userID;
+    public $description;
+    public $location;
+    public $profilepicture;
+    public $userbg;
+}
