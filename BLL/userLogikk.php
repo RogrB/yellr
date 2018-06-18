@@ -39,4 +39,9 @@ class userLogic {
         return $ok;
     }
     
+    function createYell($user, $yell) {
+        $ok = $this->db->createYell($user, $yell);
+        return $ok;
+    }
+    
 }

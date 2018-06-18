@@ -96,7 +96,7 @@ class userDB {
         $sql = "SELECT * FROM user, userinfo WHERE username = '" . $username ."' AND user.userID = userinfo.userID;";
         $resultat = $this->db->query($sql);
         if (!$resultat) {
-            echo "Error";
+            return "Error";
         }
         else {
             $Objekt = $resultat->fetch_object();
@@ -128,26 +128,24 @@ class userDB {
         }        
     }
     
-    
-    /*
-    function hentAlleKunder()
-    {
-        $sql = "Select * from Kunde Left Join Poststed On Kunde.postnr = Poststed.postnr ";
+    function createYell($user, $yell) {
+        $date = date("d/m/Y");
+        $likes = 0;
+        $reyell = 0;
+        $sql = "Insert INTO yell (userID,yellNR,yell,date,likes,reyell)";
+        $sql .= " Values ('$user',DEFAULT,'$yell','$date','$likes','$reyell');";
         $resultat = $this->db->query($sql);
-        $kunder = array();
-        while($rad = $resultat->fetch_object())
-        {
-            $kunder[]=$rad;
+        if (!$resultat) {
+            return "Feil";
         }
-        return $kunder;
-    }    */
+        else {
+            if ($this->db->affected_rows == 0) {
+                return "Feil insetting";
+            }
+            else {
+                return "OK";
+            }
+        }       
+    }
+    
 }
-/*
-echo "test";
-$user = new user();
-$userDb = new userDB();
-$user->username = "test";
-$user->email = "test1";
-$user->password = "test2";
-echo $userDb->registerUser($user);
-*/
