@@ -36,7 +36,8 @@ class userDB {
                 return "Feil";
             }
             else {
-                return ($this->registerUserInfo($this->db->insert_id) ? $this->db->insert_id : "Feil");
+                $id = $this->db->insert_id;
+                return ($this->registerUserInfo($id) ? $id : "Feil");
             }
         }     
     }

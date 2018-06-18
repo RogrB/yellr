@@ -44,13 +44,14 @@
                 email           : $("#regemail").val(),
                 password        : $("#regpassword").val()             
             };
-            console.log(send);
+            //console.log(send);
             $.post(url,send,function(data) {
                 if(data === "Feil") {
                     console.log("Failed to register new user " + send.username);
                 }
                 else {
-                    $(location).attr('href', 'view/user.php?user=' + send.username + '&newuser=true');  
+                    //console.log(data);
+                   $(location).attr('href', 'view/user.php?user=' + send.username + '&newuser=true');  
                 }
             })
                 .fail(function(data) {

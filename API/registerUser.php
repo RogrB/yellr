@@ -19,8 +19,8 @@ if ($ok === "Feil") {
     echo json_encode("Feil");
 }
 else {
-    $_SESSION['userID'] = $ok;
     $_SESSION['loggedin'] = true;
     $_SESSION['username'] = $user->username;
-    echo json_encode("OK");    
+    $_SESSION['userID'] = (int)$ok;
+    echo json_encode("OK"); 
 }

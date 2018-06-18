@@ -27,14 +27,7 @@ if (!empty($_FILES)) {
         }
         else {
             // Bildet er OK - Prøver å laste opp filen
-            if (!file_exists('../view/image/upload/' . $_SESSION['username'])) {
-                mkdir('../view/image/upload/' . $_SESSION['username'], 0777, true);
-            }
-            $filsjekk = move_uploaded_file($temp_fil, $helt_filnavn);
-            if (!$filsjekk) {
-                echo json_encode("Feil bilde profil");
-            }
-            else {
+            if (handleImage($temp_fil, $helt_filnavn, $filnavn, $info)) {
                 $info->profilepicture = "image/upload/" . $_SESSION['username'] . "/" . $filnavn;
             }
         }
@@ -51,14 +44,7 @@ if (!empty($_FILES)) {
         }
         else {
             // Bildet er OK - Prøver å laste opp filen
-            if (!file_exists('../view/image/upload/' . $_SESSION['username'])) {
-                mkdir('../view/image/upload/' . $_SESSION['username'], 0777, true);
-            }            
-            $filsjekk = move_uploaded_file($temp_fil, $helt_filnavn);
-            if (!$filsjekk) {
-                echo json_encode("Feil bilde bg");
-            }
-            else {
+            if (handleImage($temp_fil, $helt_filnavn, $filnavn, $info)) {
                 $info->userbg = "image/upload/" . $_SESSION['username'] . "/" . $filnavn;
             }
         }
@@ -68,3 +54,15 @@ if (!empty($_FILES)) {
 $ok = $userLogic->updateInfo($info);
 echo json_encode($ok);
 
+function handleImage($tmp, $helnavn, $filnavn, $info) {
+    if (!file_exists('../view/image/upload/' . $_SESSION['username'])) {
+        mkdir('../view/image/upload/' . $_SESSION['username'], 0777, true);
+    }
+    $filsjekk = move_uploaded_file($tmp, $helnavn);
+    if (!$filsjekk) {
+        return false;
+    }
+    else {
+        return true;
+    }    
+}
