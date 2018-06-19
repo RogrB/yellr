@@ -76,31 +76,31 @@
 
             });       
             
-        $("#createYell").submit(function(evt) {
-            evt.preventDefault();
-            var url = "../API/createYell.php";
-            var send = {
-                yell        : $("#yell").val()
-            };
-            //console.log($("#yell").val());
-            
-            $.post(url,send,function(data) {
-                if(data === "Feil") {
-                    console.log("Failed to create yell");
-                }
-                else if (data === "Feil insetting") {
-                    console.log("Failed to insert to DB");
-                }
-                else {
-                    $(location).attr('href', 'yellr.php?user=' + uname);  
-                }
-            })
-                .fail(function(data) {
-                    console.log("Failed API call to create yell");
-                    console.log(data);
-                });
-                
-        });                
+            $("#createYell").submit(function(evt) {
+                evt.preventDefault();
+                var url = "../API/createYell.php";
+                var send = {
+                    yell        : $("#yell").val()
+                };
+                //console.log($("#yell").val());
+
+                $.post(url,send,function(data) {
+                    if(data === "Feil") {
+                        console.log("Failed to create yell");
+                    }
+                    else if (data === "Feil insetting") {
+                        console.log("Failed to insert to DB");
+                    }
+                    else {
+                        $(location).attr('href', 'yellr.php?user=' + uname);  
+                    }
+                })
+                    .fail(function(data) {
+                        console.log("Failed API call to create yell");
+                        console.log(data);
+                    });
+
+            });                
             
         });
     </script>

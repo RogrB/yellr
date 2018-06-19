@@ -1,47 +1,5 @@
 <?php
     session_start();
-    if (!empty($_GET['user'])) {
-        $db = new mysqli("localhost", "root", "", "test");
-        if ($db->connect_error) {
-            die("Failed connection to Database: " . $db->connect - error);
-        }
-        $username = $db->real_escape_string($_GET['user']);
-        $sql = "SELECT * FROM user, userinfo WHERE username = '" . $username ."' AND user.userID = userinfo.userID;";
-        $resultat = $db->query($sql);
-        
-        if (!$resultat) {
-            // FOR Å STOPPE SIDELOGIN HVIS BRUKER IKKE FINNES I DB - FUNKER IKKE
-            echo "Can't find user in database";
-            die();
-        }
-        else {
-            $radObjekt = $resultat->fetch_object();
-            $userID = $radObjekt->userID;
-        }
-        // SJEKKER OM BRUKER EIER SIDEN - FOR Å KUNNE SLETTE
-        $deletesjekk = false;
-        $likesjekk = "";
-        if (isset($_SESSION['username'])) {
-            if ($_SESSION['username'] === $username) {
-                $deletesjekk = true;
-            }
-            if (isset($_SESSION['userID'])) {
-                $likesjekk = $_SESSION['userID'];
-            }
-        }
-    }
-    else {
-        echo "Undefined user";
-        die();
-    }
-    if (isset($_POST['logout'])) {
-        unset($_SESSION['username']);
-        unset($_SESSION['loggedin']);
-        unset($_SESSION['userID']);
-        header("Location: ../index.php");
-        exit();  
-    }    
-    
 ?>
 <!DOCTYPE html>
 <html>
@@ -62,8 +20,8 @@
     $(function() {
         getYell();
         getInfo();
-        getLoginInfo();
-        });        
+        getLoginInfo();     
+    });        
        
     function like(yell) {
         var url = "../API/setLike.php";
@@ -215,13 +173,31 @@
                 logInfo += "<table><tr><td>Logged in as <a href='user.php'>" + data + "</a>";
                 logInfo += "</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                 logInfo += "<td style='vertical-align:top'>";
-                logInfo += "<button class='btn btn-warning'>Log Out</button></td></tr></table>";
+                logInfo += "<button class='btn btn-warning' id='logOut' onclick='logOut();'>Log Out</button></td></tr></table>";
             }
             $("#logOutDiv").html(logInfo);
         })
             .fail(function() {
                 console.log("Failed API call to get login info");
         });        
+    }
+    
+    function logOut() {
+        var url = "../API/logOut.php";
+        $.getJSON(url,function(data) {
+            if(data === "Failed logout") {
+                console.log("Failed logout");
+                //$(location).attr('href', '../index.php');    
+            }
+            else {
+                console.log("Logged out");
+                $(location).attr('href', '../index.php');                    
+            }
+        })
+        .fail(function(data) {
+            console.log("Failed API call to logout");
+            console.log(data);
+        });
     }
     </script>    
       
