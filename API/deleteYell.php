@@ -5,17 +5,13 @@ include_once '../BLL/userLogikk.php';
 header('Content-Type: application/json');
 
 if(!isset($_SESSION['userID'])) {
-    $sessionID = 0;
+    echo json_encode("userID error");
+    die();
 }
-else {
-    $sessionID = $_SESSION['userID'];
-}
-
-$username = $_POST['userID'];
 $userLogic = new userLogic();
 
-$userID = $userLogic->getUserID($username);
+$yell = $_POST['yell'];
 
-$ok = $userLogic->getYells($userID, $sessionID);
+$ok = $userLogic->deleteYell($yell);
 echo json_encode($ok);
 

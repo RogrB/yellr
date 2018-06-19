@@ -44,4 +44,29 @@ class userLogic {
         return $ok;
     }
     
+    function getYells($user, $sessionID) {
+        $ok = $this->db->getYells($user, $sessionID);
+        return $ok;
+    }
+    
+    function getUserID($username) {
+        $ok = $this->db->getUserID($username);
+        return $ok;
+    }
+    
+    function setLike($yell, $user) {
+        $ok = $this->db->setLike($yell, $user);
+        return $ok;
+    }
+    
+    function unLike($yell, $user) {
+        $ok = $this->db->unLike($yell, $user);
+        return $ok;
+    }    
+    
+    function deleteYell($yell) {
+        $ok = $this->db->deleteYell($yell);
+        return $ok;
+    }       
+    
 }

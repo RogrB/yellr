@@ -16,3 +16,14 @@ class description {
     public $profilepicture;
     public $userbg;
 }
+
+class yell {
+    public $userID;
+    public $yellNR;
+    public $yell;
+    public $date;
+    public $likes;
+    public $reyell;
+    public $likesjekk;
+    public $deletesjekk;
+}

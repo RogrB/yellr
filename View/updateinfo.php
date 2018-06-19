@@ -20,7 +20,7 @@
         //"use strict"; 
         var uname = <?php echo json_encode($_SESSION['username']) ?> ;
         $(function() {
-            var url = "../API/checkLogin.php";
+            var url = "../API/verifyLogin.php";
             var send = { username : uname };
             $.post(url,send,function(data) {
                 if(data === "Feil") {

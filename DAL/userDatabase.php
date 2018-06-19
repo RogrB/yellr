@@ -148,4 +148,121 @@ class userDB {
         }       
     }
     
+    function getYells($userID, $sessionID) {
+        $sql = "SELECT * FROM yell WHERE userID = '" . $userID . "' ORDER BY yellNR desc;";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Feil";
+        }
+        else {
+            if ($this->db->affected_rows == 0) {
+                return "Feil bruker";
+            }
+            else {
+                $antallrader = $this->db->affected_rows;
+                $output = $this->arrangeYells($resultat, $antallrader, $sessionID);
+                return $output;
+            }       
+        }
+    }
+    
+    function arrangeYells($object, $antallrader, $sessionID) {
+        $jsondata = array();
+        
+        for ($i = 0; $i < $antallrader; $i++) {
+            $yell = new yell();
+            $yellrad = $object->fetch_object();
+            $yell->userID = $yellrad->userID;
+            $yell->yellNR = $yellrad->yellNR;
+            $yell->yell = $yellrad->yell;
+            $yell->date = $yellrad->date;
+
+            $yell->likes = $this->getLikes($yell->yellNR);
+
+            $yell->reyell = $yellrad->reyell;
+            $yell->likesjekk = $this->sjekkLike($yell->yellNR, $sessionID);
+            $yell->deletesjekk = ($yellrad->userID == $sessionID ? true : false);
+
+            $jsondata[] = $yell;  
+        }
+        return $jsondata;
+    }
+    
+    function getLikes($yellID) {
+        $sql = "select count(*) AS antall from likes where yellNR = '" . $yellID . "';";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return 0;
+        }
+        else {
+            $objekt = $resultat->fetch_object();
+            return $objekt->antall;
+        }          
+    }
+    
+    function sjekkLike($yellNR, $userID) {
+        // Sjekker om den spesifikke yellen er liket av brukeren
+        $sql = "select * from likes where yellNR = '$yellNR' AND likedby = '$userID';";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return false;
+        }
+        else {
+            if ($this->db->affected_rows == 0) {
+                return false;
+            } else {
+                return true;
+            }
+        }         
+    }
+    
+    function getUserID($username) {
+        $sql = "select userID from user where username = '$username';";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Feil";
+        }
+        else {
+            if ($this->db->affected_rows == 0) {
+                return "Feil inset";
+            } else {
+                $objekt = $resultat->fetch_object();
+                return $objekt->userID;
+            }
+        }          
+    }
+    
+    function setLike($yell, $user) {
+        $sql = "INSERT INTO likes (yellNR,likedby) VALUES ('$yell','$user');";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Feil";
+        }
+        else {
+            return "OK";
+        }     
+    }
+    
+    function unLike($yell, $user) {
+        $sql = "delete from likes where yellNR = '$yell' AND likedby = '$user';";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Feil";
+        }
+        else {
+            return "OK";
+        }     
+    }
+    
+    function deleteYell($yell) {
+        $sql = "delete from yell where yellNR = '" . $yell . "';";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Feil";
+        }                 
+        else {
+            return "OK";
+        }
+    }
+    
 }
