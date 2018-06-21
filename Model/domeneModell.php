@@ -26,4 +26,5 @@ class yell {
     public $reyell;
     public $likesjekk;
     public $deletesjekk;
+    public $profilepicture;
 }

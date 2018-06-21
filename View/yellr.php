@@ -20,7 +20,47 @@
     $(function() {
         getYell();
         getInfo();
-        getLoginInfo();     
+        getLoginInfo();  
+        $('#reYellModal').modal({ show: false});
+        
+        $("#reYellForm").submit(function(evt) {
+            evt.preventDefault();
+            var url = "../API/createYell.php";
+            var sendYell = "<div class=\'media\'>";
+            sendYell += '<div class=\"media-left\">';
+            sendYell += "<img src=\'" + $("#profile").attr('src');
+            sendYell += "\' class=\'media-object img-circle\' style=\'width:50px\'></div>";
+            sendYell += '<div class=\"media-body\">';
+            sendYell += "<h5 class=\'media-heading\'>reYelled from <a href=\'yellr.php?user=" + $("#reYellUser").text() + "\'> " + $("#reYellUser").text() + "</a>:</h5>";
+            sendYell += "<p>" + $("#reYellTarget").text() + "<br>";
+            sendYell += "<i><span style=\'font-size: 12px\'>";
+            sendYell += "<br>" + $("#dateTarget").text() + "</span></i></p></div>";
+            sendYell += "<br><br>";
+            sendYell += $("#reYell").val();
+            sendYell += "</div>";
+            var send = {
+                yell : sendYell
+            };
+            console.log(send);
+
+            $.post(url,send,function(data) {
+                if(data === "Feil") {
+                    console.log("Failed to reYell");
+                }
+                else if (data === "Feil insetting") {
+                    console.log("Failed to insert to DB");
+                }
+                else {
+                    $(location).attr('href', 'user.php');  
+                }
+            })
+                .fail(function(data) {
+                    console.log("Failed API call to reYell");
+                    console.log(data);
+                });
+
+        });
+
     });        
        
     function like(yell) {
@@ -85,9 +125,13 @@
                         utdata += "<i class='glyphicon glyphicon-trash' alt='Delete'  style='cursor: pointer;' ";
                         utdata += "onclick=\"javascript:return confirm('Are you sure you want to delete this yell?'), deleteYell(" + yell[i].yellNR + ");\"></i>";                        
                     }
-                    utdata += "<br><br>";
+                    utdata += "<br><br>";                   
+                    
+                    utdata += "<div class='media'><div class='media-left'>";
+                    utdata += "<img src='" + yell[i].profilepicture + "' class='media-object img-circle' style='width:50px'></div>";
+                    utdata += "<div class='media-body'>";
                     utdata += yell[i].yell;
-                    utdata += "<br><br>";
+                    utdata += "</div><br>";
                     if (yell[i].likesjekk) {
                         utdata += "<i class='glyphicon glyphicon-heart' style='color: red; cursor: pointer;' alt='Unlike' onclick='unlike(" + yell[i].yellNR + ");'> </i> ";
                     }
@@ -96,7 +140,7 @@
                     }
                     utdata += yell[i].likes;
                     utdata += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-                    utdata += "<i class='glyphicon glyphicon-retweet' style='cursor: pointer;' alt='Reyells'></i> ";
+                    utdata += "<i class='glyphicon glyphicon-retweet' style='cursor: pointer;' alt='Reyells' onclick='stageReYell(" + yell[i].yellNR + ");'></i> ";
                     utdata += yell[i].reyell;
                     utdata += "<hr>";
                 }
@@ -199,8 +243,60 @@
             console.log(data);
         });
     }
+    
+    function stageReYell(yell) {
+        var url = "../API/getYell.php";
+        var send = { yellNR : yell };
+        $.post(url,send,function(data) {
+            if(data === "Feil bruker") {
+                console.log("Please log in to reYell");   
+            }
+            else if (data === "Error") {
+                console.log("Could not reYell");
+            }
+            else {
+                $("#reYellUser").html(data.username);
+                $("#reYellTarget").html(data.yell);
+                $("#dateTarget").html("Originally posted " + data.date);
+                $("#profile").attr("src",data.profilepicture);
+                $('#reYellModal').modal('show');      
+            }
+        })
+        .fail(function(data) {
+            console.log("Failed API call to get yell to reYell");
+            console.log(data);
+        });
+    }
+    
+    
     </script>    
-      
+    
+    <div id="reYellModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">reYell from <span id="reYellUser"></span>&nbsp;&nbsp;&nbsp;
+                  <img id="profile" style="width:50px" class="img-circle"></h4>
+            </div>
+            <div class="modal-body">
+                <p><span id="reYellTarget"></span><br><br>
+                    <i><span id="dateTarget" style="font-size: 12px"></span></i></p>
+            </div>
+            <div class="modal-footer">
+                <form action='' method="POST" id="reYellForm">
+                    <textarea class="form-control" placeholder="Add a comment?" rows='8' cols="50" name='reYell' id='reYell'></textarea><br>
+                    <center><input type='submit' name='submit' value='reYell!' id='reYellBtn' class='btn btn-primary'>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button></center>
+                </form>                
+            </div>
+          </div>
+
+        </div>
+    </div>
+    
     <div class="header">
         <div class='headerwrap'>
             <div class="headerlinks">

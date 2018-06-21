@@ -133,10 +133,10 @@ class userDB {
         $likes = 0;
         $reyell = 0;
         $sql = "Insert INTO yell (userID,yellNR,yell,date,likes,reyell)";
-        $sql .= " Values ('$user',DEFAULT,'$yell','$date','$likes','$reyell');";
+        $sql .= " Values ('$user',DEFAULT,'" . mysqli_real_escape_string($this->db, $yell) . "','$date','$likes','$reyell');";
         $resultat = $this->db->query($sql);
         if (!$resultat) {
-            return "Feil";
+            return $this->db->error;
         }
         else {
             if ($this->db->affected_rows == 0) {
@@ -149,7 +149,7 @@ class userDB {
     }
     
     function getYells($userID, $sessionID) {
-        $sql = "SELECT * FROM yell WHERE userID = '" . $userID . "' ORDER BY yellNR desc;";
+        $sql = "SELECT * FROM yell,userinfo WHERE userinfo.userID = yell.userID AND yell.userID = '" . $userID . "' ORDER BY yellNR desc;";
         $resultat = $this->db->query($sql);
         if (!$resultat) {
             return "Feil";
@@ -182,6 +182,7 @@ class userDB {
             $yell->reyell = $yellrad->reyell;
             $yell->likesjekk = $this->sjekkLike($yell->yellNR, $sessionID);
             $yell->deletesjekk = ($yellrad->userID == $sessionID ? true : false);
+            $yell->profilepicture = $yellrad->profilepicture;
 
             $jsondata[] = $yell;  
         }
@@ -264,5 +265,17 @@ class userDB {
             return "OK";
         }
     }
+    
+    function getYell($yellNR) {
+        $sql = "SELECT yell,username,date,profilepicture FROM yell, user, userinfo WHERE yell.userID = user.userID AND user.userID = userinfo.userID AND yellNR = '" . $yellNR . "';";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Error";
+        }
+        else {
+            $objekt = $resultat->fetch_object();
+            return $objekt;
+        }
+    }    
     
 }

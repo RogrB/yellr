@@ -67,6 +67,11 @@ class userLogic {
     function deleteYell($yell) {
         $ok = $this->db->deleteYell($yell);
         return $ok;
-    }       
+    }  
+    
+    function getYell($yellNR) {
+        $ok = $this->db->getYell($yellNR);
+        return $ok;
+    }
     
 }
