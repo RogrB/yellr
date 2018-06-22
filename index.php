@@ -25,9 +25,15 @@
                 tabell = "Could not access latest yell";
             }
             else {
-                tabell = "<h1 class='titleh1'>Latest Yell:</h1>";
-                tabell += "<p class='whitetext'>" + data.yell + "</p>";                
-                tabell += "By <a class='whitetext' href='view/yellr.php?user=" + data.username + "'>" + data.username + "</a> " + data.date;
+                var str = data.yell;
+                if (str.startsWith("<div")) {
+                    tabell = "";
+                }
+                else {
+                    tabell = "<h1 class='titleh1'>Latest Yell:</h1>";
+                    tabell += "<p class='whitetext'>" + str + "</p>";                
+                    tabell += "By <a class='whitetext' href='view/yellr.php?user=" + data.username + "'>" + data.username + "</a> " + data.date;                    
+                }
             }
             $("#latestYell").html(tabell);
         })

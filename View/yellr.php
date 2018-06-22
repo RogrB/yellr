@@ -22,6 +22,7 @@
         getInfo();
         getLoginInfo();  
         $('#reYellModal').modal({ show: false});
+        $('#successModal').modal({ show: false});
         
         $("#reYellForm").submit(function(evt) {
             evt.preventDefault();
@@ -51,7 +52,8 @@
                     console.log("Failed to insert to DB");
                 }
                 else {
-                    $(location).attr('href', 'user.php');  
+                    $('#reYellModal').modal('hide');
+                    $('#successModal').modal('show');      
                 }
             })
                 .fail(function(data) {
@@ -296,6 +298,24 @@
 
         </div>
     </div>
+    
+    <div id="successModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-body">
+                <div class="alert alert-success">
+                  <strong>reYell posted!</strong> Your reYell has been successfully posted.
+                </div>                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="getYell();">Close</button></center>             
+            </div>
+          </div>
+
+        </div>
+    </div>    
     
     <div class="header">
         <div class='headerwrap'>
