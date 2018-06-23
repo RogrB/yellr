@@ -18,12 +18,11 @@
 <body>
     <script type="text/javascript">
     $(function() {
-        getYell();
+        getFeed();
         getInfo();
         getLoginInfo();  
         $('#reYellModal').modal({ show: false});
-        $('#successModal').modal({ show: false});
-        checkUsers();
+        $('#successModal').modal({ show: false});        
         
         $("#reYellForm").submit(function(evt) {
             evt.preventDefault();
@@ -43,7 +42,7 @@
             var send = {
                 yell : sendYell
             };
-            console.log(send);
+            //console.log(send);
 
             $.post(url,send,function(data) {
                 if(data === "Feil") {
@@ -59,7 +58,7 @@
             })
                 .fail(function(data) {
                     console.log("Failed API call to reYell");
-                    console.log(data);
+                    //console.log(data);
                 });
 
         });
@@ -79,7 +78,7 @@
             }
             else {
                 // Like registrert i DB
-                getYell();
+                getFeed();
             }
         })
         .fail(function(data) {
@@ -101,7 +100,7 @@
             }
             else {
                 // Like registrert i DB
-                getYell();
+                getFeed();
             }
         })
         .fail(function(data) {
@@ -110,18 +109,17 @@
         });
     }        
 
-    function getYell() {
-        var username = "<?php echo $_GET['user']; ?>";
-        var url = "../API/getYells.php";
-        var send = { userID : username };
+    function getFeed() {
+        var url = "../API/getFeed.php";
 
-        $.post(url,send,function(yell) {
+        $.getJSON(url,function(yell) {
             //var yell = JSON.parse(resultat);
             var utdata = "";
             if (yell.userID !== null && yell !== "Feil bruker") {
                 // SKRIV UT FORMAT
                 for (var i = 0; i < yell.length; i++) {
-                    utdata += "<a href='yellr.php?user=" + username + "'>" + username + " </a>";
+                    utdata += "<table><tr><td>";
+                    utdata += "<a href='yellr.php?user=" + yell[i].username + "'>" + yell[i].username + " </a>";
                     utdata += yell[i].date;
                     if (yell[i].deletesjekk) {
                         utdata += "&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -145,6 +143,9 @@
                     utdata += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                     utdata += "<i class='glyphicon glyphicon-retweet' style='cursor: pointer;' alt='Reyells' onclick='stageReYell(" + yell[i].yellNR + ");'></i> ";
                     utdata += yell[i].reyell;
+                    utdata += "</td><td><div id='followbtn" + i + "'><button class='btn btn-primary'";
+                    utdata += "onclick='unFollow(\"" + yell[i].username + "\", " + i + ");'>UnFollow</button></div>";
+                    utdata += "</td></tr></table>";
                     utdata += "<hr>";
                 }
             }
@@ -162,26 +163,10 @@
             $("#yells").html("Failed API call to get yells");
         });   
     }
-        
-    function deleteYell(yellNR) {
-        var url = "../API/deleteYell.php";
-        var send = { yell : yellNR };
-        $.post(url,send,function(data) {
-            if(data === "Feil") {
-                return "Feil";
-            }
-            else {
-                getYell();
-            }
-        })
-            .fail(function() {
-                console.log("Failed API call to delete yell");
-        });        
-    }
     
     function getInfo() {
         var url = "../API/getUserInfo.php";
-        var send = { user : "<?php echo $_GET['user']; ?>" };
+        var send = { user : "<?php echo (isset($_SESSION['username']) ? $_SESSION['username'] : 'null') ?>" };
         var yellInfo = "";
         $.post(url,send,function(data) {
             if(data === "Error") {
@@ -274,16 +259,8 @@
         });
     }
     
-    function checkUsers() {
-        var username = "<?php echo (isset($_SESSION['username']) ? $_SESSION['username'] : 'null') ?>";        
-        if (username !== null && username !== "<?php echo $_GET['user'] ?>") {
-            $("#followBtn").html('<button class="btn btn-primary" onclick="follow();" id="followButton">Follow</button>');
-        }
-    }
-    
-    function follow() {
+    function follow(usr, id) {
         var url = "../API/follow.php";
-        var usr = "<?php echo $_GET['user'] ?>";
         var send = { user : usr };
 
         $.post(url,send,function(data) {
@@ -294,7 +271,7 @@
                 console.log("Failed to register follow");
             }
             else {
-                $("#followBtn").html('<button class="btn btn-primary" onclick="unFollow();" id="followButton">Un Follow</button>');
+                $("#followbtn"+id).html('<button class="btn btn-primary" onclick="unFollow(\'' + usr + '\', ' + id + ');">Un Follow</button>');
             }
         })
         .fail(function(data) {
@@ -303,11 +280,9 @@
         });        
     }
     
-    function unFollow() {
+    function unFollow(usr, id) {
         var url = "../API/unFollow.php";
-        var usr = "<?php echo $_GET['user'] ?>";
         var send = { user : usr };
-
         $.post(url,send,function(data) {
             if(data === "Feil bruker") {
                 console.log("Please log in to unfollow");
@@ -316,18 +291,17 @@
                 console.log("Failed to register unfollow");
             }
             else {
-                $("#followBtn").html('<button class="btn btn-primary" onclick="follow();" id="followButton">Follow</button>');
+                $("#followbtn"+id).html('<button class="btn btn-default" onclick="follow(\'' + usr + '\', ' + id + ');">Follow</button>');
             }
         })
         .fail(function(data) {
             console.log("Failed API call to unfollow");
             console.log(data);
         });        
-    }    
+    }     
     
-    
-    </script>    
-    
+    </script>     
+
     <div id="reYellModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
@@ -365,12 +339,12 @@
                 </div>                
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="getYell();">Close</button></center>             
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="getFeed();">Close</button></center>             
             </div>
           </div>
 
         </div>
-    </div>    
+    </div>  
     
     <div class="header">
         <div class='headerwrap'>
@@ -392,23 +366,16 @@
         </div>
     </div>  
         
-
-    <div class="userBG" id="userBGR">
+    <div class="profilePictureDivFeed" id="profilePic">
         
     </div>
-    <div class="profilePictureDiv" id="profilePic">
-        
-    </div>
-    <div class="stickyheader">
+    <div class="stickyheaderFeed">
         <div class="yellStats">
-            asdf
-        </div>
-        <div class="rightfollow" id="followBtn">
-            
+            My Feed
         </div>
     </div>
     
-    <div class="yellBG">
+    <div class="yellBGFeed">
         <div class="wrapper">
             <div class="yellInfo" id="yellInfo"><br>
 

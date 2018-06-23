@@ -44,7 +44,8 @@
                     $("#updateLinkInput").html(updateLink);
                     
                     userContent += '<img src="' + data.profilepicture + '" alt="Profile Picture" id="profilePicture" class="img-circle" height="150" >';
-                    userContent += "<table><tr><td><h1><a href='yellr.php?user=" + data.username + "'><i>" + data.username + "</i></a></h1></td><td>&nbsp;&nbsp;&nbsp;&nbsp;<a href='yellr.php?user=" + data.username + "'> My yells</a></td></tr></table>";
+                    userContent += "<table><tr><td><h1><a href='yellr.php?user=" + data.username + "'><i>" + data.username + "</i></a></h1></td>";
+                    userContent += "<td>&nbsp;&nbsp;&nbsp;&nbsp;<a href='yellr.php?user=" + data.username + "'>My yells </a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='myFeed.php'>My Feed</a></td></tr></table>";
                     $("#userContentInput").html(userContent);
                     
                     var loginContent = "<a href='yellr.php?user=" + data.username + "'>" + data.username + "</a>";

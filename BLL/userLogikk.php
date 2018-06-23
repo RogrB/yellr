@@ -74,4 +74,19 @@ class userLogic {
         return $ok;
     }
     
+    function follow($user, $follower) {
+        $ok = $this->db->follow($user, $follower);
+        return $ok;
+    }
+    
+    function unFollow($user, $follower) {
+        $ok = $this->db->unFollow($user, $follower);
+        return $ok;
+    }
+    
+    function getFeed($userID) {
+        $ok = $this->db->getFeed($userID);
+        return $ok;
+    }
+    
 }

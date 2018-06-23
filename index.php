@@ -86,7 +86,7 @@
                     console.log("Login fail");
                 }
                 else {
-                    $(location).attr('href', 'view/user.php?user=' + send.username);  
+                    $(location).attr('href', 'view/myFeed.php');  
                 }
             })
                 .fail(function(data) {

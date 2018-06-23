@@ -149,7 +149,7 @@ class userDB {
     }
     
     function getYells($userID, $sessionID) {
-        $sql = "SELECT * FROM yell,userinfo WHERE userinfo.userID = yell.userID AND yell.userID = '" . $userID . "' ORDER BY yellNR desc;";
+        $sql = "SELECT * FROM user,yell,userinfo WHERE user.userID = userinfo.userID AND userinfo.userID = yell.userID AND yell.userID = '" . $userID . "' ORDER BY yellNR desc;";
         $resultat = $this->db->query($sql);
         if (!$resultat) {
             return "Feil";
@@ -183,6 +183,7 @@ class userDB {
             $yell->likesjekk = $this->sjekkLike($yell->yellNR, $sessionID);
             $yell->deletesjekk = ($yellrad->userID == $sessionID ? true : false);
             $yell->profilepicture = $yellrad->profilepicture;
+            $yell->username = $yellrad->username;
 
             $jsondata[] = $yell;  
         }
@@ -267,7 +268,8 @@ class userDB {
     }
     
     function getYell($yellNR) {
-        $sql = "SELECT yell,username,date,profilepicture FROM yell, user, userinfo WHERE yell.userID = user.userID AND user.userID = userinfo.userID AND yellNR = '" . $yellNR . "';";
+        $sql = "SELECT yell,username,date,profilepicture FROM yell, user, userinfo WHERE yell.userID = user.userID";
+        $sql .= " AND user.userID = userinfo.userID AND yellNR = '" . $yellNR . "';";
         $resultat = $this->db->query($sql);
         if (!$resultat) {
             return "Error";
@@ -277,5 +279,46 @@ class userDB {
             return $objekt;
         }
     }    
+    
+    function follow($user, $follower) {
+        $sql = "INSERT INTO followers (userID,follower) VALUES ('$user','$follower');";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Feil";
+        }
+        else {
+            return "OK";
+        }     
+    }    
+    
+    function unFollow($user, $follower) {
+        $sql = "delete from followers where userID = '$user' AND follower = '$follower';";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Feil";
+        }
+        else {
+            return "OK";
+        }     
+    }
+    
+    function getFeed($userID) {
+        $sql = "SELECT * FROM user,yell,userinfo,followers WHERE userinfo.userID = user.userID AND userinfo.userID = yell.userID"; 
+        $sql .= " AND userinfo.userID = followers.userID AND followers.follower = '" . $userID . "' ORDER BY yellNR desc;";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Feil";
+        }
+        else {
+            if ($this->db->affected_rows == 0) {
+                return "Feil bruker";
+            }
+            else {
+                $antallrader = $this->db->affected_rows;
+                $output = $this->arrangeYells($resultat, $antallrader, $userID);
+                return $output;
+            }       
+        }        
+    }
     
 }
