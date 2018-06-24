@@ -89,4 +89,9 @@ class userLogic {
         return $ok;
     }
     
+    function getStats($userID) {
+        $ok = $this->db->getStats($userID);
+        return $ok;
+    }
+    
 }

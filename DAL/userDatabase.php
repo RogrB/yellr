@@ -321,4 +321,81 @@ class userDB {
         }        
     }
     
+    function getStats($userID) {
+        $stats = new stats();
+        $stats->yells = $this->countYells($userID);
+        $stats->followers = $this->countFollowers($userID);
+        $stats->following = $this->countFollowing($userID);
+        $stats->likes = $this->countLikes($userID);
+        return $stats;
+    }
+    
+    function countYells($userID) {
+        $sql = "SELECT COUNT(*) as result FROM yell WHERE userID = '" . $userID . "';";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Feil";
+        }
+        else {
+            if ($this->db->affected_rows == 0) {
+                return "Feil bruker";
+            }
+            else {
+                $objekt = $resultat->fetch_object();
+                return $objekt->result;
+            }       
+        }             
+    }
+    
+    function countFollowers($userID) {
+        $sql = "SELECT COUNT(*) as result FROM followers WHERE userID = '" . $userID . "';";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Feil";
+        }
+        else {
+            if ($this->db->affected_rows == 0) {
+                return "Feil bruker";
+            }
+            else {
+                $objekt = $resultat->fetch_object();
+                return $objekt->result;
+            }       
+        }             
+    }
+    
+    function countFollowing($userID) {
+        $sql = "SELECT COUNT(*) as result FROM followers WHERE follower = '" . $userID . "';";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Feil";
+        }
+        else {
+            if ($this->db->affected_rows == 0) {
+                return "Feil bruker";
+            }
+            else {
+                $objekt = $resultat->fetch_object();
+                return $objekt->result;
+            }       
+        }             
+    }
+    
+    function countLikes($userID) {
+        $sql = "SELECT COUNT(*) as result FROM yell,likes WHERE yell.yellNR = likes.yellNR AND yell.userID = '" . $userID . "';";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Feil";
+        }
+        else {
+            if ($this->db->affected_rows == 0) {
+                return "Feil bruker";
+            }
+            else {
+                $objekt = $resultat->fetch_object();
+                return $objekt->result;
+            }       
+        }             
+    }    
+    
 }

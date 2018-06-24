@@ -24,6 +24,7 @@
         $('#reYellModal').modal({ show: false});
         $('#successModal').modal({ show: false});
         checkUsers();
+        getStats();
         
         $("#reYellForm").submit(function(evt) {
             evt.preventDefault();
@@ -80,6 +81,7 @@
             else {
                 // Like registrert i DB
                 getYell();
+                getStats();
             }
         })
         .fail(function(data) {
@@ -102,6 +104,7 @@
             else {
                 // Like registrert i DB
                 getYell();
+                getStats();
             }
         })
         .fail(function(data) {
@@ -295,6 +298,7 @@
             }
             else {
                 $("#followBtn").html('<button class="btn btn-primary" onclick="unFollow();" id="followButton">Un Follow</button>');
+                getStats();
             }
         })
         .fail(function(data) {
@@ -317,13 +321,38 @@
             }
             else {
                 $("#followBtn").html('<button class="btn btn-primary" onclick="follow();" id="followButton">Follow</button>');
+                getStats();
             }
         })
         .fail(function(data) {
             console.log("Failed API call to unfollow");
             console.log(data);
         });        
-    }    
+    }
+    
+    function getStats() {
+        var url = "../API/getStats.php";
+        var usr = "<?php echo $_GET['user'] ?>";
+        var send = { user : usr };
+
+        $.post(url,send,function(data) {
+            if(data === "Feil") {
+                console.log("Failed to retrieve stats");
+            }
+            else {
+                var stats = "<center><table style='text-align: center; padding: 15px; top: -15px; vertical-align: top;'><tr><td>&nbsp;&nbsp;Yells:&nbsp;&nbsp;<h4>" + data.yells;
+                stats += "</h4></td><td>&nbsp;&nbsp;Following:&nbsp;&nbsp;<h4>" + data.following;
+                stats += "</h4></td><td>&nbsp;&nbsp;Followers:&nbsp;&nbsp;<h4>" + data.followers;
+                stats += "</h4></td><td>&nbsp;&nbsp;Likes:&nbsp;&nbsp;<h4>" + data.likes;
+                stats += "</h4></td></tr></table></center>";
+                $("#yellStatsDiv").html(stats);
+            }
+        })
+        .fail(function(data) {
+            console.log("Failed API call to get stats");
+            console.log(data);
+        });                
+    }
     
     
     </script>    
@@ -400,8 +429,8 @@
         
     </div>
     <div class="stickyheader">
-        <div class="yellStats">
-            asdf
+        <div class="yellStats" id="yellStatsDiv">
+            
         </div>
         <div class="rightfollow" id="followBtn">
             

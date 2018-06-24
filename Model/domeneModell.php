@@ -29,3 +29,10 @@ class yell {
     public $profilepicture;
     public $username;
 }
+
+class stats {
+    public $yells;
+    public $following;
+    public $followers;
+    public $likes;
+}
