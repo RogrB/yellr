@@ -396,6 +396,22 @@ class userDB {
                 return $objekt->result;
             }       
         }             
-    }    
+    }
+    
+    function checkIfUsernameExists($username) {
+        $sql = "SELECT userID from user where username = '" . $username . "';";
+        $resultat = $this->db->query($sql);
+        if (!$resultat) {
+            return "Feil";
+        }
+        else {
+            if ($this->db->affected_rows == 0) {
+                return "Bruker ledig";
+            }
+            else {
+                return "Bruker opptatt";
+            }       
+        }         
+    }
     
 }

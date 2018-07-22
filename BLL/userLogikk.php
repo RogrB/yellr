@@ -94,4 +94,9 @@ class userLogic {
         return $ok;
     }
     
+    function checkIfUsernameExists($username) {
+        $ok = $this->db->checkIfUsernameExists($username);
+        return $ok;
+    }
+    
 }

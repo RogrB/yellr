@@ -50,13 +50,14 @@
                 email           : $("#regemail").val(),
                 password        : $("#regpassword").val()             
             };
-            //console.log(send);
             $.post(url,send,function(data) {
                 if(data === "Feil") {
                     console.log("Failed to register new user " + send.username);
                 }
+                else if(data === "Bruker opptatt") {
+                    console.log("Username not available");
+                }
                 else {
-                    //console.log(data);
                    $(location).attr('href', 'view/user.php?user=' + send.username + '&newuser=true');  
                 }
             })

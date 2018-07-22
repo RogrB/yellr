@@ -4,8 +4,14 @@ include_once '../Model/domeneModell.php';
 include_once '../BLL/userLogikk.php';
 header('Content-Type: application/json');
 
-
 $userLogic = new userLogic();
+
+$testUsername = $userLogic->checkIfUsernameExists($_POST['username']);
+if ($testUsername === "Bruker opptatt") {
+    echo json_encode("Bruker opptatt");
+    die();
+}
+
 $user = new user();
 $user->username = $_POST['username'];
 $user->email = $_POST['email'];
